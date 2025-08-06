@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { Plus, Search, Star, Bookmark, Folder, Edit, Trash2, ExternalLink } from "lucide-react"
+import { Plus, Search, Star, Bookmark, Folder, Edit, Trash2, ExternalLink } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,6 +13,8 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { PWAInstall } from "@/components/pwa-install"
 
 interface BookmarkItem {
   id: string
@@ -174,32 +176,37 @@ export default function GridiaApp() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 p-4 transition-all duration-500">
       <div className="max-w-6xl mx-auto">
         {/* ヘッダー */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2 flex items-center gap-3">
-            <Bookmark className="text-blue-600" />
-            Gridia
-          </h1>
-          <p className="text-gray-600">あなたのブックマークを効率的に管理</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3 transition-colors duration-300">
+              <Bookmark className="text-blue-600 dark:text-blue-400" />
+              Gridia
+            </h1>
+            <p className="text-gray-700 dark:text-gray-200 transition-colors duration-300">
+              あなたのブックマークを効率的に管理
+            </p>
+          </div>
+          <ThemeToggle />
         </div>
 
         {/* 検索・フィルター・追加ボタン */}
         <div className="mb-6 space-y-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
               <Input
                 placeholder="ブックマークを検索..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 transition-colors duration-300"
               />
             </div>
 
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-full md:w-48">
+              <SelectTrigger className="w-full md:w-48 transition-colors duration-300">
                 <SelectValue placeholder="カテゴリを選択" />
               </SelectTrigger>
               <SelectContent>
@@ -221,7 +228,7 @@ export default function GridiaApp() {
                 checked={showFavoritesOnly}
                 onCheckedChange={(checked) => setShowFavoritesOnly(checked as boolean)}
               />
-              <Label htmlFor="favorites" className="flex items-center gap-1">
+              <Label htmlFor="favorites" className="flex items-center gap-1 transition-colors duration-300">
                 <Star className="w-4 h-4" />
                 お気に入りのみ
               </Label>
@@ -229,12 +236,15 @@ export default function GridiaApp() {
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button onClick={() => setEditingBookmark(null)} className="flex items-center gap-2">
+                <Button
+                  onClick={() => setEditingBookmark(null)}
+                  className="flex items-center gap-2 transition-all duration-200 hover:scale-105"
+                >
                   <Plus className="w-4 h-4" />
                   ブックマーク追加
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
+              <DialogContent className="sm:max-w-md transition-colors duration-300">
                 <DialogHeader>
                   <DialogTitle>{editingBookmark ? "ブックマーク編集" : "新しいブックマーク"}</DialogTitle>
                 </DialogHeader>
@@ -247,6 +257,7 @@ export default function GridiaApp() {
                       onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
                       placeholder="ブックマークのタイトル"
                       required
+                      className="transition-colors duration-300"
                     />
                   </div>
 
@@ -259,6 +270,7 @@ export default function GridiaApp() {
                       onChange={(e) => setFormData((prev) => ({ ...prev, url: e.target.value }))}
                       placeholder="https://example.com"
                       required
+                      className="transition-colors duration-300"
                     />
                   </div>
 
@@ -270,6 +282,7 @@ export default function GridiaApp() {
                       onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
                       placeholder="ブックマークの説明（任意）"
                       rows={3}
+                      className="transition-colors duration-300"
                     />
                   </div>
 
@@ -279,7 +292,7 @@ export default function GridiaApp() {
                       value={formData.category}
                       onValueChange={(value) => setFormData((prev) => ({ ...prev, category: value }))}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="transition-colors duration-300">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -310,10 +323,15 @@ export default function GridiaApp() {
                   </div>
 
                   <div className="flex gap-2 pt-4">
-                    <Button type="button" variant="outline" onClick={resetForm} className="flex-1 bg-transparent">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={resetForm}
+                      className="flex-1 transition-all duration-200 bg-transparent"
+                    >
                       キャンセル
                     </Button>
-                    <Button type="submit" className="flex-1">
+                    <Button type="submit" className="flex-1 transition-all duration-200 hover:scale-105">
                       {editingBookmark ? "更新" : "追加"}
                     </Button>
                   </div>
@@ -327,13 +345,13 @@ export default function GridiaApp() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredBookmarks.length === 0 ? (
             <div className="col-span-full text-center py-12">
-              <Folder className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500 text-lg">
+              <Folder className="w-16 h-16 text-gray-400 dark:text-gray-500 mx-auto mb-4 transition-colors duration-300" />
+              <p className="text-gray-500 dark:text-gray-400 text-lg transition-colors duration-300">
                 {searchTerm || selectedCategory !== "all" || showFavoritesOnly
                   ? "マッチするブックマークが見つかりません"
                   : "まだブックマークがありません"}
               </p>
-              <p className="text-gray-400 mt-2">
+              <p className="text-gray-400 dark:text-gray-500 mt-2 transition-colors duration-300">
                 {searchTerm || selectedCategory !== "all" || showFavoritesOnly
                   ? "検索条件を変更してみてください"
                   : "最初のブックマークを追加してみましょう"}
@@ -341,13 +359,18 @@ export default function GridiaApp() {
             </div>
           ) : (
             filteredBookmarks.map((bookmark) => (
-              <Card key={bookmark.id} className="hover:shadow-lg transition-shadow duration-200">
+              <Card
+                key={bookmark.id}
+                className="hover:shadow-lg transition-all duration-300 hover:scale-105 dark:hover:shadow-gray-700/25"
+              >
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
-                      <CardTitle className="text-lg truncate mb-2">{bookmark.title}</CardTitle>
+                      <CardTitle className="text-lg truncate mb-2 transition-colors duration-300">
+                        {bookmark.title}
+                      </CardTitle>
                       <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="secondary" className="flex items-center gap-1">
+                        <Badge variant="secondary" className="flex items-center gap-1 transition-colors duration-300">
                           <div className={`w-2 h-2 rounded-full ${getCategoryColor(bookmark.category)}`} />
                           {getCategoryName(bookmark.category)}
                         </Badge>
@@ -358,7 +381,9 @@ export default function GridiaApp() {
                 </CardHeader>
                 <CardContent className="pt-0">
                   {bookmark.description && (
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">{bookmark.description}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2 transition-colors duration-300">
+                      {bookmark.description}
+                    </p>
                   )}
 
                   <div className="flex items-center justify-between">
@@ -366,15 +391,15 @@ export default function GridiaApp() {
                       href={bookmark.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 text-sm truncate flex-1 flex items-center gap-1"
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm truncate flex-1 flex items-center gap-1 transition-colors duration-300"
                     >
                       <ExternalLink className="w-3 h-3 flex-shrink-0" />
                       {bookmark.url}
                     </a>
                   </div>
 
-                  <div className="flex items-center justify-between mt-4 pt-3 border-t">
-                    <span className="text-xs text-gray-400">
+                  <div className="flex items-center justify-between mt-4 pt-3 border-t dark:border-gray-700 transition-colors duration-300">
+                    <span className="text-xs text-gray-400 dark:text-gray-500 transition-colors duration-300">
                       {new Date(bookmark.updatedAt).toLocaleDateString("ja-JP")}
                     </span>
 
@@ -383,20 +408,25 @@ export default function GridiaApp() {
                         variant="ghost"
                         size="sm"
                         onClick={() => toggleFavorite(bookmark.id)}
-                        className="p-1 h-8 w-8"
+                        className="p-1 h-8 w-8 transition-all duration-200 hover:scale-110"
                       >
                         <Star
-                          className={`w-4 h-4 ${bookmark.isFavorite ? "text-yellow-500 fill-current" : "text-gray-400"}`}
+                          className={`w-4 h-4 ${bookmark.isFavorite ? "text-yellow-500 fill-current" : "text-gray-400 dark:text-gray-500"} transition-colors duration-300`}
                         />
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => startEdit(bookmark)} className="p-1 h-8 w-8">
-                        <Edit className="w-4 h-4 text-gray-600" />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => startEdit(bookmark)}
+                        className="p-1 h-8 w-8 transition-all duration-200 hover:scale-110"
+                      >
+                        <Edit className="w-4 h-4 text-gray-600 dark:text-gray-400 transition-colors duration-300" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => deleteBookmark(bookmark.id)}
-                        className="p-1 h-8 w-8 text-red-600 hover:text-red-800"
+                        className="p-1 h-8 w-8 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-all duration-200 hover:scale-110"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -410,31 +440,44 @@ export default function GridiaApp() {
 
         {/* 統計情報 */}
         <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card>
+          <Card className="transition-all duration-300 hover:scale-105">
             <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-blue-600">{bookmarks.length}</div>
-              <div className="text-sm text-gray-600">総ブックマーク数</div>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 transition-colors duration-300">
+                {bookmarks.length}
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-300">
+                総ブックマーク数
+              </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="transition-all duration-300 hover:scale-105">
             <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-yellow-600">{bookmarks.filter((b) => b.isFavorite).length}</div>
-              <div className="text-sm text-gray-600">お気に入り</div>
+              <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 transition-colors duration-300">
+                {bookmarks.filter((b) => b.isFavorite).length}
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-300">お気に入り</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="transition-all duration-300 hover:scale-105">
             <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-green-600">{categories.length}</div>
-              <div className="text-sm text-gray-600">カテゴリ数</div>
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400 transition-colors duration-300">
+                {categories.length}
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-300">カテゴリ数</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="transition-all duration-300 hover:scale-105">
             <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-purple-600">{filteredBookmarks.length}</div>
-              <div className="text-sm text-gray-600">表示中</div>
+              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 transition-colors duration-300">
+                {filteredBookmarks.length}
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-300">表示中</div>
             </CardContent>
           </Card>
         </div>
+
+        {/* PWAインストールプロンプト */}
+        <PWAInstall />
       </div>
     </div>
   )
